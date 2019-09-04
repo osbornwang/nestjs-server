@@ -1,0 +1,11 @@
+apps:
+  - script   : ../dist/src/main.js
+    instances: 1
+    exec_mode: cluster
+    env      :
+      name    : api-arya-uat
+      NODE_ENV: development
+      TS_NODE_FILES: true
+    env_production:
+      name    : api-arya-prod
+      NODE_ENV: production

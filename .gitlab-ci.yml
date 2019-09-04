@@ -1,0 +1,239 @@
+cache:
+  paths:
+  - node_modules/
+
+stages:
+  - build
+  - deploy_uat
+  - deploy_prod
+      
+build_job_master:
+  image: node:9.11.2
+  stage: build
+  script:
+    ## install dependencies
+    - npm install
+
+    ## build app
+    - export PATH=$PATH:./node_modules/.bin
+    - npm run build
+    - tar -zcf dist.tgz dist/ package.json database.json migrations/ static/
+  artifacts:
+    paths:
+      - dist.tgz
+    expire_in: 1 week
+  only:
+    refs:
+      - master
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[deploy\]$/i || $CI_COMMIT_MESSAGE =~ /^Merge branch/i
+      
+build_job_schedule:
+  image: node:9.11.2
+  stage: build
+  script:
+    ## install dependencies
+    - npm install
+
+    ## build app
+    - export PATH=$PATH:./node_modules/.bin
+    - npm run build
+    - tar -zcf dist.tgz dist/ package.json database.json migrations/ static/
+  artifacts:
+    paths:
+      - dist.tgz
+    expire_in: 1 week
+  only:
+    - schedules
+    
+build_job_manual:
+  image: node:9.11.2
+  stage: build
+  when: manual
+  script:
+    ## install dependencies
+    - npm install
+
+    ## build app
+    - export PATH=$PATH:./node_modules/.bin
+    - npm run build
+    - tar -zcf dist.tgz dist/ package.json database.json migrations/ static/
+  artifacts:
+    paths:
+      - dist.tgz
+    expire_in: 1 week
+  only:
+    refs:
+      - master
+
+deploy_uat_master:
+  stage: deploy_uat
+  script:
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    ##
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$UAT_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    ##
+    ## Use ssh-keyscan to scan the keys of your private server. Replace gitlab.com
+    ## with your own domain name. You can copy and repeat that command if you have
+    ## more than one server to connect to.
+    ##
+    - ssh-keyscan $UAT_SERVER_IP >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    ## deploy app
+    - scp dist.tgz flash@$UAT_SERVER_IP:~/artifacts/
+    - ssh flash@$UAT_SERVER_IP "bash ~/deploy_nest.sh"
+  environment:
+    name: uat
+    url: https://uat-arya-api.1micro.cn
+  only:
+    refs:
+      - master
+    variables:
+      - $CI_COMMIT_MESSAGE =~ /\[deploy\]$/i || $CI_COMMIT_MESSAGE =~ /^Merge branch/i
+      
+deploy_uat_schedule:
+  stage: deploy_uat
+  script:
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    ##
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$UAT_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    ##
+    ## Use ssh-keyscan to scan the keys of your private server. Replace gitlab.com
+    ## with your own domain name. You can copy and repeat that command if you have
+    ## more than one server to connect to.
+    ##
+    - ssh-keyscan $UAT_SERVER_IP >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    ## deploy app
+    - scp dist.tgz flash@$UAT_SERVER_IP:~/artifacts/
+    - ssh flash@$UAT_SERVER_IP "bash ~/deploy_nest.sh"
+  environment:
+    name: uat
+    url: https://uat-arya-api.1micro.cn
+  only:
+    - schedules
+
+deploy_uat_manual:
+  stage: deploy_uat
+  when: manual
+  script:
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    ##
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$UAT_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    ##
+    ## Use ssh-keyscan to scan the keys of your private server. Replace gitlab.com
+    ## with your own domain name. You can copy and repeat that command if you have
+    ## more than one server to connect to.
+    ##
+    - ssh-keyscan $UAT_SERVER_IP >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    ## deploy app
+    - scp dist.tgz flash@$UAT_SERVER_IP:~/artifacts/
+    - ssh flash@$UAT_SERVER_IP "bash ~/deploy_nest.sh"
+  environment:
+    name: uat
+    url: https://uat-arya-api.1micro.cn
+  only:
+    refs:
+      - master
+
+deploy_prod_manual:
+  stage: deploy_prod
+  when: manual
+  script:
+    ##
+    ## Install ssh-agent if not already installed, it is required by Docker.
+    ## (change apt-get to yum if you use an RPM-based image)
+    ##
+    - 'which ssh-agent || ( apt-get update -y && apt-get install openssh-client -y )'
+    ##
+    ## Run ssh-agent (inside the build environment)
+    ##
+    - eval $(ssh-agent -s)
+    ##
+    ## Add the SSH key stored in SSH_PRIVATE_KEY variable to the agent store
+    ## We're using tr to fix line endings which makes ed25519 keys work
+    ## without extra base64 encoding.
+    ## https://gitlab.com/gitlab-examples/ssh-private-key/issues/1#note_48526556
+    ##
+    - echo "$PROD_SSH_PRIVATE_KEY" | tr -d '\r' | ssh-add - > /dev/null
+    ##
+    ## Create the SSH directory and give it the right permissions
+    ##
+    - mkdir -p ~/.ssh
+    - chmod 700 ~/.ssh
+
+    ##
+    ## Use ssh-keyscan to scan the keys of your private server. Replace gitlab.com
+    ## with your own domain name. You can copy and repeat that command if you have
+    ## more than one server to connect to.
+    ##
+    - ssh-keyscan $PROD_SERVER_IP >> ~/.ssh/known_hosts
+    - chmod 644 ~/.ssh/known_hosts
+
+    ## deploy app
+    - scp dist.tgz flash@$PROD_SERVER_IP:~/artifacts/
+    - ssh flash@$PROD_SERVER_IP "bash ~/deploy_nest.sh"
+  environment:
+    name: production
+    url: https://arya-api.1micro.cn
+  only:
+    refs:
+      - master

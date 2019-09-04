@@ -1,0 +1,31 @@
+{
+    "dev": {
+        "driver": "mysql",
+        "host": "localhost",
+        "port": 3310,
+        "database": "arya",
+        "user": "root",
+        "password": "123456",
+        "multipleStatements": true
+    },
+    "uat": {
+        "driver": "mysql",
+        "host": "localhost",
+        "port": 3310,
+        "database": "arya",
+        "user": "root",
+        "password": "123456",
+        "multipleStatements": true
+    },
+    "prod": {
+        "driver": "mysql",
+        "host": "localhost",
+        "port": 3312,
+        "database": "arya",
+        "user": "root",
+        "password": "Fy7bF3vHwJvaNgkHmTvwJgXgLLUbrA",
+        "multipleStatements": true
+    },
+
+    "sql-file" : true
+}
