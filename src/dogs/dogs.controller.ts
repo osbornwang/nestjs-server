@@ -12,15 +12,15 @@ import { RolesGuard } from '../common/guards/roles.guard';
 import { LoggingInterceptor } from '../common/interceptors/logging.interceptor';
 import { TransformInterceptor } from '../common/interceptors/transform.interceptor';
 import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
-import { CatsService } from './cats.service';
+import { DogsService } from './dogs.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { Cat } from './interfaces/cat.interface';
 
-@Controller('cats')
+@Controller('dogs')
 @UseGuards(RolesGuard)
 @UseInterceptors(LoggingInterceptor, TransformInterceptor)
-export class CatsController {
-  constructor(private readonly catsService: CatsService) {}
+export class DogsController {
+  constructor(private readonly catsService: DogsService) {}
 
   @Post()
   @Roles('admin')
@@ -29,7 +29,7 @@ export class CatsController {
   }
 
   @Get()
-  async findAll(): Promise<Cat[]> {
+  async findAll(): Promise<string> {
     return this.catsService.findAll();
   }
 

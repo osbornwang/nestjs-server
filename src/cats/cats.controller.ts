@@ -6,6 +6,7 @@ import {
   Post,
   UseGuards,
   UseInterceptors,
+  Inject,
 } from '@nestjs/common';
 import { Roles } from '../common/decorators/roles.decorator';
 import { RolesGuard } from '../common/guards/roles.guard';
@@ -15,13 +16,14 @@ import { ParseIntPipe } from '../common/pipes/parse-int.pipe';
 import { CatsService } from './cats.service';
 import { CreateCatDto } from './dto/create-cat.dto';
 import { Cat } from './interfaces/cat.interface';
+import { DogsService } from '../dogs/dogs.service';
 
 @Controller('cats')
 @UseGuards(RolesGuard)
 @UseInterceptors(LoggingInterceptor, TransformInterceptor)
 export class CatsController {
   constructor(private readonly catsService: CatsService) {}
-
+  @Inject('DogsService') protected readonly DogsService: any;
   @Post()
   @Roles('admin')
   async create(@Body() createCatDto: CreateCatDto) {
@@ -31,6 +33,13 @@ export class CatsController {
   @Get()
   async findAll(): Promise<Cat[]> {
     return this.catsService.findAll();
+  }
+  @Get('test')
+  async test(): Promise<string> {
+    console.log('========================');
+    console.dir(this);
+    console.log('========================');
+    return 'DogsService';
   }
 
   @Get(':id')
