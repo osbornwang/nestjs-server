@@ -1,10 +1,8 @@
 import { NestFactory } from '@nestjs/core'
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger'
 import { NestExpressApplication } from '@nestjs/platform-express'
-
 import * as helmet from 'helmet'
 import * as ServeStatic from 'serve-static'
-
 import { AppModule } from './app.module'
 import { ExceptionsFilter } from './core/filter/errors.filter'
 import config from './config'
@@ -35,29 +33,18 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule, {
     cors: true,
   })
-
   // app.setGlobalPrefix(API_PREFIX)
-
   // await initSwagger(app)
   app.use(helmet())
-
-  app.use('/static', ServeStatic(resolve('static')))
   app.use(logger)
   app.useGlobalFilters(new ExceptionsFilter())
   app.useGlobalInterceptors(new TransformInterceptor())
   app.useGlobalPipes(new ValidationPipe())
-  app.setBaseViewsDir(join(__dirname, '../static/views'))
-  app.setViewEngine('hbs')
-  await app.startAllMicroservicesAsync()
   await app.listen(config.port, config.hostName, () => {
     Logger.log(
-      `Flash API server has been started on http://${config.hostName}:${config.port}`,
+      `Lincoln API server has been started on http://${config.hostName}:${config.port}`,
     )
   })
-  if (module.hot) {
-    module.hot.accept()
-    module.hot.dispose(() => app.close())
-  }
 }
 
 bootstrap()

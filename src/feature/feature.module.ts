@@ -11,7 +11,7 @@ import config from '../config'
 import { DemoController } from './demo/demo.controller'
 import { DemoService } from './demo/demo.service'
 import { AuthMiddleware } from './authentication/auth.middleware'
-import { HandlebarsAdapter, MailerModule } from '@nest-modules/mailer'
+import { RedisModule } from 'nestjs-redis'
 
 const ENTITIES = []
 
@@ -25,27 +25,7 @@ const ENTITIES = []
         expiresIn: config.JWTExpiresIn,
       },
     }),
-    TypeOrmModule.forRoot(config.orm as TypeOrmModuleOptions),
-    TypeOrmModule.forFeature([...ENTITIES]),
-    MailerModule.forRoot({
-      transport: {
-        service: '163',
-        // host: "smtp.163.com",
-        port: 465,
-        // secure: true, // true for 465, false for other ports
-        auth: config.mail163,
-      },
-      defaults: {
-        from: '"闪光" <jonsnowprince@163.com>',
-      },
-      template: {
-        dir: __dirname + '../../static/views',
-        adapter: new HandlebarsAdapter(), // or new PugAdapter()
-        options: {
-          strict: true,
-        },
-      },
-    }),
+    RedisModule.register(config.redisConfig),
   ],
   controllers: [DemoController],
   providers: [DemoService],

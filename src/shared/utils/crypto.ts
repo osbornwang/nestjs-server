@@ -32,9 +32,5 @@ export function WXBizDataCrypt(
   } catch (err) {
     throw new Error('Illegal Buffer')
   }
-
-  if (decoded.watermark.appid !== config.AppID) {
-    throw new Error('Illegal Buffer')
-  }
   return decoded
 }

@@ -2,19 +2,13 @@ import { LoggerLevel } from '../shared/utils/logger'
 import { resolve } from 'path'
 
 export default {
-  orm: {
-    type: 'mysql',
-    host: '118.25.57.50',
-    port: 3310,
-    username: 'root',
-    password: '123456',
-    database: 'arya_test',
-    entities: [resolve(`./**/*.entity.ts`)],
-    timezone: 'UTC',
-    charset: 'utf8mb4',
-    multipleStatements: true,
-    dropSchema: false,
-    synchronize: false,
-    logging: true,
+  port: 3210,
+  redisConfig: {
+    url: 'redis://:127.0.0.1',
+    port: 6379,
   },
+  helmet: { hidePoweredBy: { setTo: 'C++ 12' } },
+  JWTSecret: 'aje494yvzor90zid9ez930193k1010e8',
+  JWTExpiresIn: 60 * 60 * 24 * 30, // 30 day
+  serverHost: 'https://uat-arya-api.1micro.cn',
 }

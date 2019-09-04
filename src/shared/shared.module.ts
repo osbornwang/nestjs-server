@@ -1,8 +1,6 @@
 import { Global, HttpModule, Module } from '@nestjs/common'
 
-import { WechatService } from './services/wechat/wechat.service'
-
-const SERVICES = [WechatService]
+const SERVICES = []
 
 @Global()
 @Module({
