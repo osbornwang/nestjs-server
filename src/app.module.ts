@@ -1,17 +1,21 @@
-import { Module } from '@nestjs/common';
-import { CatsModule } from './cats/cats.module';
-import { DogsModule } from './dogs/dogs.module';
-import { RedisModule } from 'nestjs-redis';
+import { Module, Global } from '@nestjs/common';
 import { AppController } from './app.controller';
+import { AppService } from './app.service';
+import { RedisModule } from 'nestjs-redis';
+import { LoginModule } from './features/login/login.module';
+import { CarsModule } from './features/cars/cars.module';
+
 @Module({
   imports: [
-    CatsModule,
-    DogsModule,
+    LoginModule,
+    CarsModule,
     RedisModule.register({
-      name: 'test1',
-      url: 'redis://127.0.0.1:6379',
+      host: '127.0.0.1',
+      port: 6379,
     }),
   ],
+  providers: [AppService],
+  exports: [AppService],
   controllers: [AppController],
 })
 export class ApplicationModule {}

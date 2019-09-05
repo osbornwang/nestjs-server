@@ -1,14 +1,18 @@
-import {
-  Body,
-  Controller,
-  Get,
-} from '@nestjs/common';
-import { TestService } from './app.service';
+import { Body, Controller, Get, UseInterceptors } from '@nestjs/common';
+import { AppService } from './app.service';
+import { AuthenticationInterceptor } from './common/interceptors/authentication.interceptor';
 @Controller('app')
 export class AppController {
-  constructor(private readonly testService: TestService) {}
+  private readonly appService: AppService;
+  constructor(appService: AppService) {
+    this.appService = appService;
+  }
   @Get()
-  async findAll(): Promise<any> {
-    return this.testService.root();
+  test(): boolean {
+    return this.appService.test();
+  }
+  @Get('test')
+  root(): Promise<boolean> {
+    return this.appService.root();
   }
 }
