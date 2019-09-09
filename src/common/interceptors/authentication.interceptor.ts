@@ -25,6 +25,8 @@ export class AuthenticationInterceptor implements NestInterceptor {
       console.log(`Identity verification failed ${new Date()}`);
       throw new UnauthorizedException();
     }
+    // todo  add userInfo to context
+
     return next
       .handle()
       .pipe(
