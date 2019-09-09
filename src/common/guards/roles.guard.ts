@@ -6,6 +6,9 @@ export class RolesGuard implements CanActivate {
   constructor(private readonly reflector: Reflector) {}
 
   canActivate(context: ExecutionContext): boolean {
+    console.log('========================');
+    console.log('canActivate');
+    console.log('========================');
     const roles = this.reflector.get<string[]>('roles', context.getHandler());
     if (!roles) {
       return true;
@@ -16,10 +19,6 @@ export class RolesGuard implements CanActivate {
   }
 
   hasRole(apiLimit: string[], userAuth: string): boolean {
-    console.log('========================');
-    console.log('apiLimit', apiLimit);
-    console.log('userAuth', userAuth);
-    console.log('========================');
     if (userAuth === 'admin') {
       return true;
     }
