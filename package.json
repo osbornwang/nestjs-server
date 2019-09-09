@@ -21,13 +21,23 @@
   "dependencies": {
     "@nestjs/common": "^6.0.0",
     "@nestjs/core": "^6.0.0",
+    "@nestjs/jwt": "^6.1.1",
+    "@nestjs/passport": "^6.1.0",
     "@nestjs/platform-express": "^6.0.0",
+    "chalk": "^2.4.2",
     "class-transformer": "^0.2.3",
     "class-validator": "^0.10.0",
+    "lodash": "^4.17.15",
+    "log4js": "^5.1.0",
+    "moment": "^2.24.0",
     "nestjs-redis": "^1.2.2",
+    "passport": "^0.4.0",
+    "passport-jwt": "^4.0.0",
+    "passport-local": "^1.0.0",
     "reflect-metadata": "^0.1.12",
     "rimraf": "^2.6.2",
     "rxjs": "^6.3.3",
+    "stacktrace-js": "^2.0.0",
     "youch": "^2.0.10"
   },
   "devDependencies": {

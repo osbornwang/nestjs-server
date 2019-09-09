@@ -1,13 +1,13 @@
-import { Controller, Body, Post, UseInterceptors } from '@nestjs/common';
-import { TransformInterceptor } from '../../common/interceptors/transform.interceptor';
-import { LoginService } from './login.service';
-import { IUserLoginInfo } from './interfaces/login.interface';
+import { Controller, Get, Request, Post, UseGuards } from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from '../auth/auth.service';
+
 @Controller('login')
-@UseInterceptors(TransformInterceptor)
-export class UserController {
-  constructor(private readonly loginService: LoginService) {}
+export class LoginController {
+  constructor(private readonly authService: AuthService) {}
+  @UseGuards(AuthGuard('local'))
   @Post()
-  async userLogin(@Body() params: IUserLoginInfo): Promise<boolean> {
-    return this.loginService.userLogin(params);
+  async login(@Request() req) {
+    return this.authService.login(req.user);
   }
 }

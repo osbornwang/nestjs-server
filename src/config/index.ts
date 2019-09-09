@@ -7,7 +7,8 @@ export const isUat = process.env.NODE_ENV === 'uat';
 export const isProd = process.env.NODE_ENV === 'production';
 
 let config = {
-  port: 3300,
+  port: 3000,
+  hostName: 'localhost',
   redisConfig: {
     host: '127.0.0.1',
     port: 6379,
