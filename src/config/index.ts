@@ -1,5 +1,4 @@
 import * as _ from 'lodash';
-import { resolve } from 'path';
 import productionConfig from './prod.config';
 import uatConfig from './uat.config';
 
@@ -12,6 +11,7 @@ let config = {
   redisConfig: {
     host: '127.0.0.1',
     port: 6379,
+    expirationTime: 60 * 10,
   },
   JWTSecret: 'aje494yvzor90zid9ez930193k1010e8',
   JWTExpiresIn: 60 * 60 * 24 * 30, // 30 day

@@ -1,11 +1,8 @@
 import { Injectable } from '@nestjs/common';
-
 export type User = any;
-
 @Injectable()
 export class UsersService {
   private readonly users: User[];
-
   constructor() {
     this.users = [
       {
@@ -28,7 +25,6 @@ export class UsersService {
       },
     ];
   }
-
   async findOne(username: string): Promise<User | undefined> {
     const userInfo = this.users.find(user => user.username === username);
     return userInfo;

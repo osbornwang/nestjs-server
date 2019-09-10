@@ -1,5 +1,8 @@
 export interface ICar {
-  readonly id: string;
-  readonly name: number;
-  readonly color: string;
+  readonly id: string | number;
+  readonly key: string;
+  readonly label: string;
+  readonly name: string;
+  readonly startingPrice: string;
+  readonly others: object;
 }
