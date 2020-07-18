@@ -47,7 +47,7 @@
     "hbs": "^4.0.4",
     "helmet": "^3.18.0",
     "jest": "^24.8.0",
-    "lodash": "^4.17.11",
+    "lodash": "^4.17.19",
     "mysql": "^2.17.1",
     "nest-schedule": "^0.6.2",
     "nestjs-redis": "^1.2.2",
