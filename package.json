@@ -79,7 +79,7 @@
     "db-migrate-mysql": "^1.1.10",
     "husky": "^2.4.1",
     "lint-staged": "^8.2.1",
-    "log4js": "^4.3.2",
+    "log4js": "^6.4.0",
     "mockjs": "^1.0.1-beta3",
     "moment": "^2.24.0",
     "nodemon": "^1.18.9",
